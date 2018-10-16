@@ -48,3 +48,11 @@ th {
   border-width: 1px;
   border-color: grey;
 }
+
+table {
+  text-align: center;
+}
+
+td {
+  padding: 15px;
+}
