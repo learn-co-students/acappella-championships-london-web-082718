@@ -23,32 +23,52 @@ const aCappellaGroup = (() => {
     }
 
     static displayGroups(selection=all) {
-      selection.forEach(group => group.renderNormal())
+      selection.forEach(group => 
+        teamTable.appendChild(group.renderNormal())
+      )
     }
     
-    static findGroup(id) {
-      return all.find(group => group.id === id)
-    }
-
-    static crownWinner(id) {
-      let winner = this.findGroup(id)
+    static crownWinner(winner) {
       winnerBox.removeChild(winnerBox.firstChild)
       winnerBox.appendChild(winner.renderWinner())
       this.clearGroupDisplay()
       this.displayGroups(all.filter(group => group !== winner))
     }
 
+    static sortAndDisplay(headerText) {
+      this.clearGroupDisplay()
+      this.displayGroups(all.sort((a, b) => { 
+        return this.convertTextToAttribute(headerText, a)
+                .localeCompare(this.convertTextToAttribute(headerText, b))
+        }
+      ))
+    }
+
+    static convertTextToAttribute(headerText, groupObj) {
+    switch (headerText) {
+      case "College":
+        return groupObj.college.name;
+      case "Group Name":
+        return groupObj.name;
+      case "Membership":
+        return groupObj.membership;
+      case "Division":
+        return groupObj.college.division;
+    }
+  }
+
     renderNormal() {
       this.el = document.createElement('tr')
       this.el.innerHTML = `
-      <td>${this.college.name}</td>
-      <td>${this.name}</td>
-      <td>${this.membership}</td>
-      <td>${this.college.division}</td>
-      <td><button id=${this.id}>Crown</button</td>
+        <td>${this.college.name}</td>
+        <td>${this.name}</td>
+        <td>${this.membership}</td>
+        <td>${this.college.division}</td>
+        <td><button class="crown">Crown</button></td>
+        <td><button class="delete">Delete</button></td>
       `
-      this.watchWinnerButton()
-      teamTable.appendChild(this.el)
+      this.watchButtons()
+      return this.el
     }
 
     renderWinner() {
@@ -57,19 +77,20 @@ const aCappellaGroup = (() => {
       return this.el
     }
 
-    watchWinnerButton() {
-      this.el.querySelector('button')
-        .addEventListener('click', (e) => {
-          console.log(e)
-          aCappellaGroup.crownWinner(parseInt(e.target.id))
-        })
+    watchButtons() {
+      this.el.addEventListener('click', (e) => {
+        if (e.target.className === 'crown') {
+          aCappellaGroup.crownWinner(this)
+        } else if (e.target.className === 'delete') {
+          this.remove()
+        }
+      })
     }
 
     remove() {
-      this.el.remove()
+      API.deleteGroup(this)
+        .then(this.el.remove())
     }
-      
-
   }
 
 })()

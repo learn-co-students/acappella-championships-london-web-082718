@@ -49,6 +49,14 @@ th {
   border-color: grey;
 }
 
+a {
+  color:black;
+}
+
+a:hover {
+  color: #FFD700;
+}
+
 table {
   text-align: center;
 }
