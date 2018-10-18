@@ -48,3 +48,19 @@ th {
   border-width: 1px;
   border-color: grey;
 }
+
+a {
+  color:black;
+}
+
+a:hover {
+  color: #FFD700;
+}
+
+table {
+  text-align: center;
+}
+
+td {
+  padding: 15px;
+}
